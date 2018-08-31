@@ -1,13 +1,11 @@
 # Graphql-Fragment-Design
 
-A spider chart sample that uses [Macaw](https://github.com/exyte/macaw) library.
-![SpiderChartView Example](example.jpg)
+If you use [graphql](https://graphql.org/) as your service's api server, you can try use the following methods to design your fragment.
 
 ## Design - 1
 
 ### base Fragment
-```swift
-// MARK: - Fragment
+```graphql
 fragment BrandSimple on Brand {
     id
     name
@@ -31,8 +29,7 @@ fragment BrandReviewCount on Brand {
 }
 ```
 ![Design Example 1-1](Design-1-1.png)
-```swift
-// MARK: - Fragment
+```graphql
 fragment BrandListSimpleView on Brand {
     ...BrandSimple
     ...BrandItemCount
@@ -40,7 +37,7 @@ fragment BrandListSimpleView on Brand {
 ```
 
 ![Design Example 1-3](Design-1-3.png)
-```swift
+```graphql
 fragment BrandListView on Brand {
     ...BrandSimple
     ...BrandImagePath
@@ -49,7 +46,7 @@ fragment BrandListView on Brand {
 ```
 
 ![Design Example 1-2](Design-1-2.png)
-```swift
+```graphql
 fragment BrandListView on Brand {
     ...BrandSimple
     ...BrandImagePath
