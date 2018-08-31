@@ -1,10 +1,11 @@
 # Graphql-Fragment-Design
 
-If you use [graphql](https://graphql.org/) as your service's api server, you can try use the following methods to design your fragment.
+If you use [graphql](https://graphql.org/) as your service's api server, you can try to use the following methods to design your fragment.
 
-## Design - 1
+## Design Method - 1
 
-### base Fragment
+If you have a Brand object, you need to show the different info of Brand according to the Views.
+### The parts of fragment
 ```graphql
 fragment BrandSimple on Brand {
     id
@@ -28,6 +29,7 @@ fragment BrandReviewCount on Brand {
     }
 }
 ```
+### The first view
 ![Design Example 1-1](Design-1-1.png)
 ```graphql
 fragment BrandListSimpleView on Brand {
@@ -36,6 +38,7 @@ fragment BrandListSimpleView on Brand {
 }
 ```
 
+### The second view
 ![Design Example 1-3](Design-1-3.png)
 ```graphql
 fragment BrandListView on Brand {
@@ -45,6 +48,7 @@ fragment BrandListView on Brand {
 }
 ```
 
+### The third view
 ![Design Example 1-2](Design-1-2.png)
 ```graphql
 fragment BrandListView on Brand {
@@ -58,6 +62,7 @@ fragment BrandListView on Brand {
 
 ### Usage
 
+#### You can use extension to make your functions, and you only need to write once.
 ```swift
 extension BrandSimple {
 }
@@ -71,7 +76,6 @@ extension BrandImagePath {
     }
 }
 
-
 extension BrandItemCount {
     var itemCount: Int {
         return itemConnection.totalCount
@@ -81,6 +85,75 @@ extension BrandItemCount {
 extension BrandReviewCount {
     var reviewCount: Int {
         return reviewConnection?.totalCount ?? 0
+    }
+}
+
+extension BrandListView {
+    var imageUrl: URL? {
+        return self.fragments.brandImagePath.imageUrl
+    }
+
+    var itemCount: Int {
+        return self.fragments.brandItemCount.itemCount
+    }
+
+    var reviewCount: Int {
+        return self.fragments.brandReviewCount.reviewCount
+    }
+}
+```
+
+## Design Method - 2
+
+If you have a Button object, you need to show or hide by the login status of user.
+### The parts of fragment
+```graphql
+fragment UserSimple on User {
+    id
+    name
+    age
+    ...
+}
+
+fragment UserFollowRelation on User {
+    isFollowing: fetchState @include(if: $login) {
+        isFollowing
+    }
+}
+```
+
+### The view
+![Design Example 2-1](Design-2-1.png)
+
+```graphql
+fragment UserListView on User {
+    ...UserSimple
+    ...UserFollowRelation
+}
+
+query UserConnection($login: Boolean = true) {
+    userConnection {
+        edges {
+            node {
+                ...UserListView
+            }
+        }
+    }
+}
+```
+
+### Usage
+
+```swift
+extension UserFollowRelation {
+    var isFollowing: Bool {
+        return self.isFollowing
+    }
+}
+
+extension UserListView {
+    var isFollowing: Bool {
+        return self.fragments.userFollowRelation.isFollowing
     }
 }
 ```
