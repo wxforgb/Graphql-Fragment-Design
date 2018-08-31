@@ -116,7 +116,7 @@ fragment UserSimple on User {
 }
 
 fragment UserFollowRelation on User {
-    isFollowing: fetchState @include(if: $login) {
+    followingState: fetchFollowingState @include(if: $login) {
         isFollowing
     }
 }
@@ -147,7 +147,7 @@ query UserConnection($login: Boolean = true) {
 ```swift
 extension UserFollowRelation {
     var isFollowing: Bool {
-        return self.isFollowing
+        return self.followingState.isFollowing
     }
 }
 
